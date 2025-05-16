@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Student-dashboard</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+  <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+</head>
+
+<body style="background-image: url('{% static "images/background1.jpg" %}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        {% if user.is_authenticated %}
+      <a class="navbar-brand" href="{% url 'home' %}">Self-study_Resource_System (SRS) </a>
+      {% else %}
+      <a class="navbar-brand" href="{% url 'register' %}">Self-study_Resource_System (SRS) </a>
+      {% endif %}
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+
+      <div class="d-flex justify-content-center align-items-center my-2">
+        <h5 style="text-align: center; color: white; margin-left: 200px;">
+          <span id="currentDateTime"></span>
+        </h5>
+        <h5 style="text-align: center; color: red; margin-left: 20px;">
+          <span id="currentDay"></span>
+        </h5>
+      </div>
+      
+
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+          <ul class="navbar-nav mb-2 mb-lg-0">
+            <li class="nav-item">
+              {% if user.is_authenticated %}
+              <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+              {% else %}
+              <a class="nav-link active" aria-current="page" href="{% url 'register' %}">Home</a>
+              {% endif %}
+
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'profile' %}" style="color: green;">{{user}}</a>
+            </li> 
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Options
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{% url 'ebook' %}">Ebooks</a>
+                <a class="dropdown-item" href="{% url 'wiki' %}">Wikipedia</a>
+                <div class="dropdown-divider"></div>
+
+                <a class="dropdown-item" href="{% url 'dictionary' %}">Dictionary</a>
+                <a class="dropdown-item" href="{% url 'youtube' %}">Youtube</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'todo' %}">To-do</a>
+                <a class="dropdown-item" href="{% url 'homework' %}">Homework</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'notes' %}">Notes</a>
+                <a class="dropdown-item" href="{% url 'conversion' %}">Conversion</a>
+                <div class="dropdown-divider"></div>
+              </div>
+            </li>
+
+            <li class="nav-item">
+              <form class="nav-link d-inline" action="{% url 'logout' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link text-secondary p-0 text-decoration-none" style="font-size: inherit; margin-top: 7px;">
+                  Logout
+                </button>
+              </form>
+            </li>
+
+            {% comment %} <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">logout</a>            ### to be tested later
+            </li> {% endcomment %}
+
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">Login</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main>
+   
+
+    {% if messages %}
+  <div class="container"  style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+    
+    {% for msg in messages %}
+      <div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert" >
+        {{ msg }}
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeAlert(this)">Close</button>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    // Automatically fade out the message after a few seconds
+    setTimeout(function() {
+      var alertElement = document.querySelector('.alert');
+      if (alertElement) {
+        $(alertElement).alert('close');
+      }
+    }, 3000); // Message disappears after 3 seconds
+  </script>
+{% endif %}
+
+<br>
+{% comment %} timer start  {% endcomment %}
+<small style="background-color: rgba(6, 194, 194, 0.65); padding: 10px; border-radius:5px">
+  <audio id="alarmSound" src="F:\myProject\Self-study_Resource_System\SRS\Self-study_Resource_System\dashboard\templates\dashboard\alarm.mp3" preload="auto"></audio>
+  <div style="display: inline-block; text-align: center;">
+    <h7 style="font-weight: bold;">Timer:</h7>
+    <label for="hours" style="font-size: 12px; margin: 0 5px;">Hr:</label>
+    <input type="number" id="hours" value="0" style="width: 40px; margin: 0 5px;">
+
+    <label for="minutes" style="font-size: 12px; margin: 0 5px;">Min:</label>
+    <input type="number" id="minutes" value="0" style="width: 40px; margin: 0 5px;">
+
+    <label for="seconds" style="font-size: 12px; margin: 0 5px;">Sec:</label>
+    <input type="number" id="seconds" value="0" style="width: 40px; margin: 0 5px;">
+
+    <button onclick="startTimer()" class="btn btn-primary btn-sm" style="display: inline; text-align: center; color: white; background-color: #004d66; padding: 4px; border-radius: 5px; text-decoration: none;">Start</button>
+
+      <span style="color: red; font-weight: bold; display: inline; display: inline; text-align: center; color: red;  padding: 5px; border-radius: 5px; text-decoration: none; margin:5px">Time Remaining:</span>
+      <span id="timer" style="color: black; font-size: 14px;"></span>
+    
+  </div>
+</small>
+<hr>
+
+  
+
+{% comment %} timer end  {% endcomment %}
+    {% block content %}
+    {% endblock content %}
+
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+
+{% comment %} timer function {% endcomment %}
+
+  {% comment %} <script>
+    var timerInterval;
+
+        function startTimer() {
+            // Get the user inputs
+            var hours = parseInt(document.getElementById("hours").value) || 0;
+            var minutes = parseInt(document.getElementById("minutes").value) || 0;
+            var seconds = parseInt(document.getElementById("seconds").value) || 0;
+
+            // Convert user input to total seconds
+            var totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+
+            if (totalSeconds '$lt'= 0) {
+                alert("Please set a valid time.");
+                return;
+            }
+
+            // Display the initial countdown
+            updateTimerDisplay(totalSeconds);
+
+            // Clear any existing interval before starting a new one
+            clearInterval(timerInterval);
+
+            // Preload the alarm sound to ensure it's ready to play
+            var alarmSound = document.getElementById("alarmSound");
+            alarmSound.load();
+
+            // Set a countdown interval
+            timerInterval = setInterval(function () {
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById("timer").innerHTML = "EXPIRED";
+                    alert("Time ends.");
+                    playAlarm(); // Play the alarm sound when the timer expires
+                } else {
+                    totalSeconds--;
+                    updateTimerDisplay(totalSeconds);
+                }
+            }, 1000); // Update every second
+        } {% endcomment %}
+
+        {% comment %} // Update the timer display with formatted time
+        function updateTimerDisplay(totalSeconds) {
+            var hours = Math.floor(totalSeconds / 3600);
+            var minutes = Math.floor((totalSeconds % 3600) / 60);
+            var seconds = totalSeconds % 60;
+
+            document.getElementById("timer").innerHTML =
+                hours + "h " + minutes + "m " + seconds + "s";
+        } {% endcomment %}
+
+        {% comment %} // Play the alarm sound {% endcomment %}
+        {% comment %} function playAlarm() {
+            var alarmSound = document.getElementById("alarmSound");
+            alarmSound.play().catch((error) => {
+                console.error("Alarm sound failed to play:", error);
+                alert("Alarm sound failed to play. Please check your browser settings or reload the page.");
+            });
+        } {% endcomment %}
+
+
+
+<script>
+
+        // Function to update and display the current date, time, and day
+        function updateDateTime() {
+            var now = new Date();
+            
+            // Format date and time
+            var date = now.toLocaleDateString();
+            var time = now.toLocaleTimeString();
+
+            // Get the day of the week
+            var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            var day = days[now.getDay()];
+
+            // Update the elements
+            document.getElementById("currentDateTime").innerHTML = date + " " + time;
+            document.getElementById("currentDay").innerHTML = day;
+        }
+
+        // Call updateDateTime every second to keep it current
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Initial call to display immediately
+
+  </script>
+
+{% comment %} timer function end {% endcomment %}
+  {% comment %} </form> {% endcomment %}
+  <script>
+    function closeAlert(button) {
+      var alertElement = button.parentElement;
+      alertElement.classList.remove('show');
+      alertElement.classList.add('fade');
+      setTimeout(function() {
+        alertElement.remove();
+      }, 150); // Remove element after fade-out animation
+    }
+    
+  </script>
+
+
+  <script>
+    function saveTimerState(remainingTime) {
+      fetch('/api/timer/', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+          },
+          body: JSON.stringify({ remaining_time: remainingTime }),
+      }).then(response => response.json())
+        .then(data => console.log("Timer state saved:", data))
+        .catch(error => console.error("Error saving timer state:", error));
+  }
+  
+  function loadTimerState() {
+      fetch('/api/timer/', {
+          method: 'GET',
+          headers: {
+              'X-CSRFToken': getCookie('csrftoken'), // Include CSRF token
+          },
+      }).then(response => response.json())
+        .then(data => {
+            const remainingTime = data.remaining_time;
+            if (remainingTime > 0) {
+                resumeTimer(remainingTime);
+            }
+        })
+        .catch(error => console.error("Error loading timer state:", error));
+  }
+  
+  // Example utility function for CSRF token
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.startsWith(name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  
+  </script>
+
+
+
+</body>
+<hr>
+</html>

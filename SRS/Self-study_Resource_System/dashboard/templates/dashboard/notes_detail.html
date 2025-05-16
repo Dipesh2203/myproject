@@ -1,0 +1,30 @@
+{% extends 'dashboard/base.html' %} 
+{% load static %} 
+{% block content %}
+
+<section class="container" style="background-color: #d9c2e9; min-height: 50vh; padding: 20px; display: flex;">
+
+    <div style="flex: 1; padding: 10px; background-color: #f4e6ff; border-radius: 8px; margin-right: 10px;">
+    <h2>{{notes.title}}</h2>
+        <div class="content-section p-0 mt-5">
+            <div class="m-3">
+            </div>
+            <hr class="p-0 m-0">
+            <p class="description m-5 p-5">
+                {{notes.description}}
+            </p>
+            <hr>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p}}
+            <a href="{% url 'edit_note' notes.id %}" class="btn btn-primary" name='edit'>Edit</a>
+            {% comment %} <button type="submit" class="btn btn-primary">Update Note</button> {% endcomment %}
+            <a href="{% url 'notes' %}" class="btn btn-secondary">Back</a>
+            </form>
+        {% comment %} right side box {% endcomment %}
+    </div>
+</section>
+
+
+{% endblock content %}

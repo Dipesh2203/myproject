@@ -1,0 +1,56 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+
+<section class="container" style="background-color:rgb(177, 159, 255); min-height: 50vh; padding: 20px; display: flex;flex-wrap: wrap; justify-content: space-between;">
+  <div style="flex: 1; padding: 20px; background-color: #f4e6ff; border-radius: 8px; margin-left: 10px; margin-right: 20px;">
+    <form method="POST">
+      {% csrf_token %}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Log In</legend>
+        {{form|crispy}}
+        {% comment %} {{form}} {% endcomment %}
+      </fieldset>
+      <div class="form-group">
+        <button href="" class="btn btn-outline-info" type="submit" name="login1">
+          Sign In
+        </button>
+      </div>
+    </form>
+    {% comment %} left side box {% endcomment %}
+  </div>
+
+
+  {% comment %} <div style="flex: 3; padding: 20px; background-color: #ffffff; border-radius: 8px;"> {% endcomment %}
+  <div style="flex: 1; padding: 20px; background-color:#f4e6ff; border-radius: 8px; margin-right: 10px;">
+    <form method="POST">
+      {% csrf_token %}
+      <fieldset class="form-group">
+        <legend class="border-bottom mb-4">Join Today</legend>
+        {{register_form|crispy}}
+        {% comment %} {{register_form}} {% endcomment %}
+      </fieldset>
+      <div class="form-group">
+        <button href="" class="btn btn-outline-info" type="submit" name="register">
+          Sign Up
+        </button>
+      </div>
+    </form>
+      {% comment %} right side box {% endcomment %}
+  </div>
+</section>
+
+
+
+
+{% comment %} <div class="container">
+  
+  <div class="border-top pt-3">
+    <small class="text-muted">Need an Account?
+      <a class="ml-2" href="{% url 'login' %}">Create an Account</a>
+    </small>
+  </div>
+</div> {% endcomment %}
+{% endblock content %}

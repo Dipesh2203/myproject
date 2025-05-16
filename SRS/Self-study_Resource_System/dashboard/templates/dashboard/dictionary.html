@@ -1,0 +1,29 @@
+{% extends 'dashboard/base.html' %} 
+{% load static %} 
+{% block content %}
+{% load crispy_forms_tags %}
+
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% comment %} {{ form}} {% endcomment %}
+        <input class="btn btn-danger" type="submit" value="Submit">
+    </form><br>
+
+   
+    <div class="content-section p-0 mt-5">
+        {% if input %}
+        <div class="custom-header">
+            <h2>Word: {{input}}</h2>
+        </div>
+        <hr class="p-0 m-0">
+
+        <p class="float-left">
+            <h4>Definition: {{definition}}</h4>
+        </p>
+    </div>
+    {% else %}
+    <h2>Sorry, API request limit exceeded</h2>
+    {% endif %}
+</section>
+{% endblock content %} 

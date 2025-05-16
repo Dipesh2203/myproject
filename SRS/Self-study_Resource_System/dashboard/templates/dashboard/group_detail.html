@@ -1,0 +1,43 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="container" style="background-color: #d9c2e9; min-height: 50vh; padding: 20px; display: flex;">
+
+  <!-- Groups Section -->
+  <div style="flex: 1; padding: 20px; background-color: #f4e6ff; border-radius: 8px; margin-right: 20px;">
+    <h3 style="margin-bottom: 20px;">Add a Member</h3>
+    <form method="POST" style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="background-color: #004d66; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+          Add Member
+        </button>
+    </form>
+  </div>
+</div>
+
+  <!-- Study Tools and Material Section -->
+  <div style="flex: 3; padding: 20px; background-color: #ffffff; border-radius: 8px;">
+    <!-- Study Tools Section -->
+    <h1 style="margin-bottom: 20px;">{{ group.name }}</h1>
+    <div style="flex: 2; padding: 20px; background-color: #f4e6ff; border-radius: 8px; margin-right: 20px;">
+        <p style="margin-bottom: 10px;">Description: {{ group.description }}</p>
+        <p style="margin-bottom: 20px;">Admin: {{ group.created_by.username }}</p>
+        <h3 style="margin-bottom: 10px;">Members:</h3>
+        <ul style="list-style: none; padding: 0; margin-bottom: 20px;">
+          {% for member in group.members.all %}
+          <li style="margin-bottom: 5px;">{{ member.username }}</li>
+          {% endfor %}
+        </ul>
+        <div class="circle-item" style="width: 100px; height: 50px; background-color: #004d66; border-radius: 25px; display: flex; justify-content: center; align-items: center; color: white; position: relative; z-index: 1;">
+
+          <a href="{% url 'group_homework' group.pk %}" style="color: white; text-decoration: none;" name='grouphomework'>Homework</a>
+          
+        </div>
+      </div>
+      </div>
+
+</section>
+
+{% endblock content %}

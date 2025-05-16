@@ -1,0 +1,46 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="container" style="background-color: #d9c2e9; min-height: 50vh; padding: 20px; display: flex;">
+
+  <!-- Groups Section -->
+  <div style="flex: 1; padding: 20px; background-color: #f4e6ff; border-radius: 8px; margin-right: 20px;">
+    <h3 style="margin-bottom: 20px;">Create a Group</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <style>
+            textarea {
+                height: 2em; /* Adjust this value for a single line height */
+                overflow: hidden; /* Prevent scrolling */
+                resize: none; /* Disable resizing by the user */
+            }
+        </style>
+        {{ form.as_p }}
+        {% comment %} <a href="{% url 'create_group' %}" style="display: block; text-align: center; color: white; background-color: #004d66; padding: 10px; border-radius: 5px; text-decoration: none;" type="submit">Create Study Group</a> {% endcomment %}
+        <button href="{% url 'create_group' %}" style="display: block; text-align: center; color: white; background-color: #004d66; padding: 10px; border-radius: 5px; text-decoration: none;" class="btn btn-outline-info" type="submit">
+          Create Study Group
+      </button>
+    </form>
+  </div>
+
+
+  <!-- Study Tools and Material Section -->
+  <div style="flex: 3; padding: 20px; background-color: #ffffff; border-radius: 8px;">
+    <!-- Study Tools Section -->
+        <div style="flex: 1; padding: 20px; background-color: #f4e6ff; border-radius: 8px; margin-right: 20px;">
+            <h3 style="margin-bottom: 20px;">Groups</h3>
+            <ul style="list-style: none; padding: 0; margin-bottom: 20px;">
+              {% for group in groups %}
+              <li style="margin-bottom: 10px;">
+                <a href="{% url 'group_detail' group.id %}" style="color:rgb(44, 107, 143); text-decoration: none;">{{ group.name }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+        </div>
+  
+    </div>
+
+</section>
+
+{% endblock content %}

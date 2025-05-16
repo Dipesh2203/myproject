@@ -1,0 +1,13 @@
+{% extends 'dashboard/base.html' %} 
+{% load static %} 
+{% block content %}
+
+<table>
+    {% for week in month_calendar %}
+        <tr>
+            {% for day in week %}
+                <td>{{ day if day != 0 else '' }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>

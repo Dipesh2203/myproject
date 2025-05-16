@@ -1,0 +1,73 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="container" style="background-color: #d9c2e9; min-height: 50vh; padding: 20px; display: flex;">
+
+  <!-- Groups Section -->
+  <div style="flex: 1; padding: 20px; background-color: #f4e6ff; border-radius: 8px; margin-right: 20px;">
+    <h3 style="margin-bottom: 20px;">Groups</h3>
+    <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <ul style="list-style: none; padding: 0; margin-bottom: 20px;">
+      {% for group in groups %}
+      <li style="margin-bottom: 10px;">
+        <a href="{% url 'group_detail' group.id %}" style="color: #004d66; text-decoration: none;">{{ group.name }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+    <a href="{% url 'create_group' %}" style="display: block; text-align: center; color: white; background-color: #004d66; padding: 10px; border-radius: 5px; text-decoration: none;">Create Study Group</a>
+  </div>
+</div>
+
+  <!-- Study Tools and Material Section -->
+  <div style="flex: 3; padding: 20px; background-color: #ffffff; border-radius: 8px;">
+    <div style="flex: 1; padding: 20px; background-color: #f4e6ff; border-radius: 8px; margin-right: 20px;">
+    <!-- Study Tools Section -->
+    <div style="width: 100%; text-align: center; margin-bottom: 40px;">
+        <h3 style="margin-bottom: 20px;">Study Tools</h3>
+        <div style="position: relative; display: flex; justify-content: space-evenly; align-items: center;">
+          <!-- Horizontal Line -->
+          <div style="position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background-color: #004d66; z-index: 0;"></div>
+          
+          <div class="circle-item" style="width: 100px; height: 50px; background-color: #004d66; border-radius: 25px; display: flex; justify-content: center; align-items: center; color: white; position: relative; z-index: 1;">
+            <a href="{% url 'notes' %}" style="color: white; text-decoration: none;">Notes</a>
+          </div>
+          <div class="circle-item" style="width: 100px; height: 50px; background-color: #004d66; border-radius: 25px; display: flex; justify-content: center; align-items: center; color: white; position: relative; z-index: 1;">
+            <a href="{% url 'homework' %}" style="color: white; text-decoration: none;">Homework</a>
+          </div>
+          <div class="circle-item" style="width: 100px; height: 50px; background-color: #004d66; border-radius: 25px; display: flex; justify-content: center; align-items: center; color: white; position: relative; z-index: 1;">
+            <a href="{% url 'todo' %}" style="color: white; text-decoration: none;">To Do</a>
+          </div>
+          <div class="circle-item" style="width: 100px; height: 50px; background-color: #004d66; border-radius: 25px; display: flex; justify-content: center; align-items: center; color: white; position: relative; z-index: 1;">
+            <a href="{% url 'ebook' %}" style="color: white; text-decoration: none;">Ebooks</a>
+          </div>
+          
+        </div>
+      </div>
+    
+
+    <!-- Study Material Section -->
+    <div style="text-align: center;">
+      <h3 style="margin-bottom: 20px;">Study Material</h3>
+      <div style="position: relative; display: flex; justify-content: space-evenly; align-items: center;">
+        <!-- Horizontal Line -->
+        <div style="position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background-color: #004d66; z-index: 0;"></div>
+        
+        <div class="circle-item" style="width: 100px; height: 50px; background-color: #004d66; border-radius: 25px; display: flex; justify-content: center; align-items: center; color: white; position: relative; z-index: 1;">
+          <a href="{% url 'youtube' %}" style="color: white; text-decoration: none;">YouTube</a>
+        </div>
+        <div class="circle-item" style="width: 100px; height: 50px; background-color: #004d66; border-radius: 25px; display: flex; justify-content: center; align-items: center; color: white; position: relative; z-index: 1;">
+          <a href="{% url 'conversion' %}" style="color: white; text-decoration: none;">Conversion</a>
+        </div>
+        <div class="circle-item" style="width: 100px; height: 50px; background-color: #004d66; border-radius: 25px; display: flex; justify-content: center; align-items: center; color: white; position: relative; z-index: 1;">
+          <a href="{% url 'dictionary' %}" style="color: white; text-decoration: none;">Dictionary</a>
+        </div>
+        <div class="circle-item" style="width: 100px; height: 50px; background-color: #004d66; border-radius: 25px; display: flex; justify-content: center; align-items: center; color: white; position: relative; z-index: 1;">
+          <a href="{% url 'wiki' %}" style="color: white; text-decoration: none;">Wikipedia</a>
+        </div>
+      </div>
+      </div>
+
+</section>
+
+{% endblock content %}
