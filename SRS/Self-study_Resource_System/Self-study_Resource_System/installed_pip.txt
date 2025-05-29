@@ -1,9 +1,0 @@
-crispy-bootstrap4 
-youtube-search-python 
-wikipedia 
-requests 
-django-crispy-forms 
-Django 
-django-scheduler 
-djangorestframework
-
