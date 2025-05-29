@@ -54,36 +54,40 @@ Screenshots
 ![image](https://github.com/user-attachments/assets/36d7d08c-3482-4d39-9a10-52f1a902eb5e)
 
 
-=========   How to Run the Project   ==========
+## How to Run the Project
 
-=========   Clone the repository   ============
-
+###  Clone the repository
+```bash
 git clone https://github.com/Dipesh2203/myproject.git
 
 cd self-study-resource-system
-
-==========    Create and activate virtual environment    ===============
+```
+### Create and activate virtual environment
+```bash
 
 python -m venv venv
 
 venv\Scripts\activate
-
-===============       Install dependencies       =================
+```
+### Install dependencies
+```bash
 
 pip install -r requirements.txt
-
-===============        Run migrations           ==================
-
+```
+### Run migrations 
+```bash
 cd SRS
 
 cd Self-study_Resource_System
 
 python manage.py migrate
-
-==================  Start the server     ====================
+```
+### Start the server
+```bash
 
 python manage.py runserver
-
-=================   Open in browser    ===================
-
+```
+### Open in browser
+```bash
 http://127.0.0.1:8000/
+```
