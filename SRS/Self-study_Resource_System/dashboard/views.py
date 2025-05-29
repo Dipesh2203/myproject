@@ -326,40 +326,6 @@ def conversion(request):
 #     register_form = UserRegistrationForm()
 
 
-def register(request):
-    if request.method == 'POST':
-        if 'register' in request.POST:
-            register_form = UserRegistrationForm(request.POST)
-            if register_form.is_valid():
-                register_form.save()
-                # form = AuthenticationForm()
-                username = register_form.cleaned_data.get('username')
-                # login(request, username)
-                messages.success(request,f"Account Created for {username} !!")
-                return redirect("register")
-        elif 'login1' in request.POST:
-            form = AuthenticationForm(data=request.POST)
-            if form.is_valid():
-                user = form.get_user()
-                login(request, user)
-                messages.success(request, f"Welcome back, {user.username}!")
-                return redirect('home')
-            else:
-                # If no button clicked, just initialize empty forms for GET request
-                register_form = UserRegistrationForm()
-                form = AuthenticationForm()
-
-    else:
-        register_form = UserRegistrationForm()
-        form = AuthenticationForm()
-    register_form = UserRegistrationForm()
-    form = AuthenticationForm()
-    context = {
-        'register_form':register_form,
-        'form':form,
-    }
-    return render(request,"dashboard/login.html",context)
-
 @login_required
 def profile(request):
     homeworks = Homework.objects.filter(is_finished=False,user=request.user)
@@ -658,4 +624,31 @@ def edit_group_homework(request, group_pk=None,homework_pk = None):
         return redirect("group_homework", pk=group.pk)
         # return JsonResponse({'status': 'unauthorized'})
 
+def register(request):
+    if request.method == 'POST':
+        if 'register' in request.POST:
+            register_form = UserRegistrationForm(request.POST)
+            form = AuthenticationForm()
+            if register_form.is_valid():
+                register_form.save()
+                username = register_form.cleaned_data.get('username')
+                messages.success(request, f"Account created for {username}!")
+                return redirect("register")
+        elif 'login1' in request.POST:
+            form = AuthenticationForm(request, data=request.POST)
+            register_form = UserRegistrationForm()
+            if form.is_valid():
+                user = form.get_user()
+                login(request, user)
+                messages.success(request, f"Welcome back, {user.username}!")
+                return redirect('home')
+    else:
+        register_form = UserRegistrationForm()
+        form = AuthenticationForm()
+
+    context = {
+        'register_form': register_form,
+        'form': form,
+    }
+    return render(request, "dashboard/login.html", context)
 
