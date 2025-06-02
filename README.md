@@ -16,7 +16,7 @@ Tech Stack
 
 - Backend: Django (Python)
 - Frontend: HTML, CSS, Bootstrap, Django Templates
-- Database: SQLite (default) / MySQL (optional)
+- Database: SQLite (default)
 - Authentication: Django's built-in user system
 
 Screenshots
