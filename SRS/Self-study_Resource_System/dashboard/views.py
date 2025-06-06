@@ -58,12 +58,14 @@ def edit_note(request, pk=None):
 
 @login_required
 def home(request):
-    # Fetch groups for the logged-in user
     groups = GroupStudy.objects.filter(members=request.user)
-    # Pass groups to the context
-    context = {'groups': groups}
+    group_homeworks = GroupHomework.objects.filter(group__in=groups)
+    context = {'groups': groups,
+            'group_homeworks':group_homeworks,
+            }
     return render(request, 'dashboard/home.html', context)
 
+ 
 @login_required
 def delete_homework(request,pk=None):
     Homework.objects.get(id=pk).delete()
@@ -97,20 +99,24 @@ def homework(request):
     else:
         form = HomeworkForm()
     homework= Homework.objects.filter(user=request.user)
-    if len(homework) == 0:
+    groups = GroupStudy.objects.filter(members=request.user)
+    group_homeworks = GroupHomework.objects.filter(group__in=groups)
+    if len(homework) and len(group_homeworks) == 0:
         homework_done = True
     else:
         homework_done = False
 
-    incomplete_homework_count = homework.filter(is_finished=False).count()
-    total_homework_count = homework.count()
+    incomplete_homework_count = homework.filter(is_finished=False).count() + group_homeworks.count()
+    total_homework_count = homework.count() + group_homeworks.count()
 
     context = {
+        'groups':groups,
         'homeworks':homework,
         'homework_done':homework_done,
         'form':form,
         'incomplete_homework_count': incomplete_homework_count,
         'total_homework_count': total_homework_count,
+        'group_homeworks':group_homeworks,
         }
     return render(request,'dashboard/homework.html',context)
 
@@ -176,6 +182,8 @@ def youtube(request):
 
 @login_required
 def todo(request):
+
+
     if request.method == 'POST':
         form = TodoForm(request.POST)
         if form.is_valid():
@@ -190,6 +198,7 @@ def todo(request):
             todos = Todo(
                 user = request.user,
                 title = request.POST['title'],
+                priority = request.POST['priority'],
                 is_finished = finished
             )
             todos.save()
@@ -197,7 +206,7 @@ def todo(request):
             messages.success(request,f"Todo Added from {request.user.username}!!")
     else:
         form = TodoForm()
-    todo = Todo.objects.filter(user=request.user)
+    todo = Todo.objects.filter(user=request.user).order_by('priority')
     if len(todo) == 0:
         todos_done = True
     else:
@@ -238,6 +247,12 @@ def edit_todo(request, pk=None):
     context = {'form':form,'todo':todo}
     # return redirect("notes-detail")
     return render(request,'dashboard/todo.html',context)
+
+
+
+
+
+
 
 def wiki(request):
     if request.method == 'POST':
@@ -326,10 +341,46 @@ def conversion(request):
 #     register_form = UserRegistrationForm()
 
 
+def register(request):
+    if request.method == 'POST':
+        if 'register' in request.POST:
+            register_form = UserRegistrationForm(request.POST)
+            if register_form.is_valid():
+                register_form.save()
+                # form = AuthenticationForm()
+                username = register_form.cleaned_data.get('username')
+                # login(request, username)
+                messages.success(request,f"Account Created for {username} !!")
+                return redirect("register")
+        elif 'login1' in request.POST:
+            form = AuthenticationForm(data=request.POST)
+            if form.is_valid():
+                user = form.get_user()
+                login(request, user)
+                messages.success(request, f"Welcome back, {user.username}!")
+                return redirect('home')
+            else:
+                # If no button clicked, just initialize empty forms for GET request
+                register_form = UserRegistrationForm()
+                form = AuthenticationForm()
+
+    else:
+        register_form = UserRegistrationForm()
+        form = AuthenticationForm()
+    register_form = UserRegistrationForm()
+    form = AuthenticationForm()
+    context = {
+        'register_form':register_form,
+        'form':form,
+    }
+    return render(request,"dashboard/login.html",context)
+
 @login_required
 def profile(request):
     homeworks = Homework.objects.filter(is_finished=False,user=request.user)
     todos = Todo.objects.filter(is_finished=False,user=request.user)
+    groups = GroupStudy.objects.filter(members=request.user)
+    group_homeworks = GroupHomework.objects.filter(group__in=groups)
     if len(homeworks) == 0:
         homework_done = True
     else:
@@ -341,6 +392,7 @@ def profile(request):
     context = {
         'homeworks':homeworks,
         'todos':todos,
+        'group_homeworks':group_homeworks,
         'homework_done':homework_done,
         'todos_done': todos_done
     }
@@ -623,32 +675,3 @@ def edit_group_homework(request, group_pk=None,homework_pk = None):
         messages.success(request, "You don't have permission to edit this homework.")
         return redirect("group_homework", pk=group.pk)
         # return JsonResponse({'status': 'unauthorized'})
-
-def register(request):
-    if request.method == 'POST':
-        if 'register' in request.POST:
-            register_form = UserRegistrationForm(request.POST)
-            form = AuthenticationForm()
-            if register_form.is_valid():
-                register_form.save()
-                username = register_form.cleaned_data.get('username')
-                messages.success(request, f"Account created for {username}!")
-                return redirect("register")
-        elif 'login1' in request.POST:
-            form = AuthenticationForm(request, data=request.POST)
-            register_form = UserRegistrationForm()
-            if form.is_valid():
-                user = form.get_user()
-                login(request, user)
-                messages.success(request, f"Welcome back, {user.username}!")
-                return redirect('home')
-    else:
-        register_form = UserRegistrationForm()
-        form = AuthenticationForm()
-
-    context = {
-        'register_form': register_form,
-        'form': form,
-    }
-    return render(request, "dashboard/login.html", context)
-
