@@ -1,7 +1,7 @@
 {% extends 'dashboard/base.html' %} 
 {% load static %}
 {% block content %}
-<section class="text-center">
+<section class="text-center" style="background-color: #d9c2e9; min-height: 50vh; padding: 20px; display: flex;">
     <div class="container">
     {% if not todos_done %}
         <h2>Due ToDos</h2>
@@ -90,6 +90,46 @@
         {% else %}
             <h3>All To homeworks are completed!!!!</h3>
         {% endif %}
+
+{% if group_homeworks %}
+    <h2>Group Homeworks</h2>
+    {% regroup group_homeworks by group as grouped_homeworks %}
+
+    {% for group_homework in grouped_homeworks %}
+        <h3>{{ group_homework.grouper.name }}'s Homework</h3>
+        <table class="table table-striped table-bordered table-hover table-dark">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Subject</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Due</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hw in group_homework.list %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ hw.subject }}</td>
+                    <td>{{ hw.title }}</td>
+                    <td>{{ hw.description }}</td>
+                    <td>{{ hw.due }}</td>
+                    <td>
+                        {% if hw.document %}
+                            <a href="{{ hw.document.url }}" class="btn btn-primary btn-sm" download>Download</a>
+                        {% else %}
+                            No File
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+{% endif %}
+
         <a href="{% url 'homework' %}" class="btn btn-danger">Homeworks</a>
     </div>
 </section>

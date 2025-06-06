@@ -135,7 +135,11 @@
 <br>
 {% comment %} timer start  {% endcomment %}
 <small style="background-color: rgba(6, 194, 194, 0.65); padding: 10px; border-radius:5px">
-  <audio id="alarmSound" src="F:\myProject\Self-study_Resource_System\SRS\Self-study_Resource_System\dashboard\templates\dashboard\alarm.mp3" preload="auto"></audio>
+  <audio id="alarmSound" loop>
+  <source src="{% static 'audio/alarm.mp3' %}" type="audio/mpeg">
+  Your browser does not support the audio tag.
+</audio>
+
   <div style="display: inline-block; text-align: center;">
     <h7 style="font-weight: bold;">Timer:</h7>
     <label for="hours" style="font-size: 12px; margin: 0 5px;">Hr:</label>
@@ -173,7 +177,7 @@
 
 {% comment %} timer function {% endcomment %}
 
-  {% comment %} <script>
+   <script>
     var timerInterval;
 
         function startTimer() {
@@ -185,7 +189,7 @@
             // Convert user input to total seconds
             var totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
 
-            if (totalSeconds '$lt'= 0) {
+            if (totalSeconds <= 0) {
                 alert("Please set a valid time.");
                 return;
             }
@@ -196,25 +200,26 @@
             // Clear any existing interval before starting a new one
             clearInterval(timerInterval);
 
-            // Preload the alarm sound to ensure it's ready to play
-            var alarmSound = document.getElementById("alarmSound");
-            alarmSound.load();
-
             // Set a countdown interval
+
             timerInterval = setInterval(function () {
                 if (totalSeconds <= 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById("timer").innerHTML = "EXPIRED";
-                    alert("Time ends.");
-                    playAlarm(); // Play the alarm sound when the timer expires
+                    	clearInterval(timerInterval);
+                    	document.getElementById("timer").innerHTML = "EXPIRED";
+			var alarmSound = document.getElementById("alarmSound");
+			alarmSound.play();
+                    	alert("Time ends.");
+			alarmSound.pause();
+			alarmSound.currentTime = 0;
                 } else {
                     totalSeconds--;
                     updateTimerDisplay(totalSeconds);
                 }
             }, 1000); // Update every second
-        } {% endcomment %}
+        } 
 
-        {% comment %} // Update the timer display with formatted time
+     // Update the timer display with formatted time
+
         function updateTimerDisplay(totalSeconds) {
             var hours = Math.floor(totalSeconds / 3600);
             var minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -222,20 +227,9 @@
 
             document.getElementById("timer").innerHTML =
                 hours + "h " + minutes + "m " + seconds + "s";
-        } {% endcomment %}
-
-        {% comment %} // Play the alarm sound {% endcomment %}
-        {% comment %} function playAlarm() {
-            var alarmSound = document.getElementById("alarmSound");
-            alarmSound.play().catch((error) => {
-                console.error("Alarm sound failed to play:", error);
-                alert("Alarm sound failed to play. Please check your browser settings or reload the page.");
-            });
-        } {% endcomment %}
+        } 
 
 
-
-<script>
 
         // Function to update and display the current date, time, and day
         function updateDateTime() {
@@ -262,6 +256,7 @@
 
 {% comment %} timer function end {% endcomment %}
   {% comment %} </form> {% endcomment %}
+
   <script>
     function closeAlert(button) {
       var alertElement = button.parentElement;
